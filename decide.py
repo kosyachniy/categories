@@ -12,7 +12,7 @@ def decide(cont):
 			su+=w[word.index(i)+1]
 
 	su=round(su, 2) if k else 0
-	return ('+'+str(su) if su>0 else str(su)) if su else 'Эти данные не влияют на курс!'
+	return ('Наука ({}%)'.format(su*100) if su>=0.5 else 'Наука ({}%)'.format((1-su)*100)) if su else 'По этим данным невозможно определить категорию!'
 
 if __name__=='__main__':
 	a=decide(input())

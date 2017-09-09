@@ -19,11 +19,11 @@ print(x)
 print(y)
 print(w)
 
-for iteration in range(100):
+for iteration in range(27):
 	print('Iteration №{}'.format(iteration+1))
 
 	for i in range(len(x)):
-		print(len(x[i]), len(w))
+		#Сделать ограничение на числа (ноль, бесконечность)
 		error = (y[i] - act(x[i], w))
 
 		for j in range(len(x[i])):
@@ -32,12 +32,5 @@ for iteration in range(100):
 
 		print('-----')
 
-while True:
-	x = [float(i) for i in input().split()]
-	s = w[0]
-	for i in range(len(x)):
-		s += x[i] * w[i+1]
-	if s>=0.5:
-		print('YES ({}%)'.format(int(round(s*100))))
-	else:
-		print('NO ({}%)'.format(int(round((1-s)*100))))
+np.savetxt('data/text-weights.csv', w, delimiter=',')
+print(w)
