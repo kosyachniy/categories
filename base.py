@@ -1,9 +1,9 @@
 from func import *
 
-words=[] #set()
+word=[] #set()
 k=[]
 for i in read(name='twits'):
-	word=[]
+	#word=[]
 	for j in i[7:]:
 		if j not in word:
 			word.append(j)
@@ -17,7 +17,7 @@ for i in read(name='twits'):
 		'''
 
 	#Проверка не по количеству слов везде, а по алотности в одном примере
-	words=sorted(set(word), key=word.count, reverse=True)[:10]
+	#words=sorted(set(word), key=word.count, reverse=True)[:10]
 
 '''
 print(len(k))
@@ -30,6 +30,7 @@ while i<len(k):
 		i+=1
 print(len(k))
 #Убирать слишком частые слова и слишком редкие (?)
+#Убирать слова, не относящиеся к сути (не важные - по ИИ)
 '''
 
 write(word, name='base', typ='w')
