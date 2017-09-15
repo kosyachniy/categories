@@ -9,6 +9,10 @@ def hello(cont):
 	return False
 
 while True:
-	for i in read():
-		send(i[0], decide(i[1]))
-	time.sleep(2)
+	try:
+		for i in read():
+			send(i[0], decide(i[1]))
+		time.sleep(2)
+	except:
+		time.sleep(5)
+		vk.auth()
