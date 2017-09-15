@@ -32,8 +32,6 @@ def neiro(column):
 
 			for j in range(len(x[i])):
 				delta = x[i][j] * error
-				while delta>1:
-					delta/=10
 				print('Δw%d = %f' % (j, delta))
 				w[j] += delta
 

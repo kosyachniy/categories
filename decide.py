@@ -20,32 +20,23 @@ def decide(cont):
 		su=round(su, 2) if k else 0
 		result.append(su)
 
-	###
 	print(result)
-	for i in range(len(result)):
-		if math.isinf(result[i]):
-			result[i]=0
-	###
 
 	m=sorted(result)[::-1]
-	k=0
 	tex=''
-	print(m)
-	while k<len(m) and m[k]>0:
-		for i in range(7):
-			if result[i]==m[k]:
-				tex+=['Наука', 'Технологии', 'Новости', 'Публицистика', 'Диалог', 'Юмор', 'Информация'][i]+' ('+str(int(m[k]))+'%)\n'
-		k+=1
-	if not tex:
-		tex='По этим данным невозможно определить категорию!'
-	#Убрать ответ, если сразу все категории
-	#Почему бесконечность?
-	#Убрать 0
-	return tex
+	try:
+		raz=int(math.log(m[0], 10))-1
+	except:
+		print('Error!')
+	else:
+		k=0
+		while k<len(m) and m[k]>0:
+			for i in range(7):
+				if result[i]==m[k]:
+					tex+=['Наука', 'Технологии', 'Новости', 'Публицистика', 'Диалог', 'Юмор', 'Информация'][i]+' ('+str(int(m[k]//(10**raz)))+'%)\n'
+			k+=1
+
+	return tex if len(tex) else 'По этим данным невозможно определить категорию!'
 
 if __name__=='__main__':
-	a=decide(input())
-	print('==========')
-	if a[0] in ('+','-'):
-		print('CLOSE-OPEN')
-	print(a,'\n==========')
+	print(decide(input()))
