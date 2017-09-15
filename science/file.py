@@ -4,7 +4,7 @@ import codecs
 delete('twits')
 
 m=[]
-with codecs.open('data/news.txt', 'r', 'utf8') as file:
+with codecs.open('data/'+mas[ii][0]+'-news.txt', 'r', 'utf8') as file:
 	for i in file:
 		x=json.loads(i)['name']
 		print(x)
