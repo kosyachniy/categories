@@ -27,11 +27,15 @@ def neiro(column):
 
 		for i in range(len(x)):
 			#Сделать ограничение на числа (ноль, бесконечность)
-			error = (y[i] - act(x[i], w))
+			error = y[i] - act(x[i], w)
+			print(error)
 
 			for j in range(len(x[i])):
-				print('Δw%d = %f' % (j, x[i][j] * error))
-				w[j] += x[i][j] * error
+				delta = x[i][j] * error
+				while delta>1:
+					delta/=10
+				print('Δw%d = %f' % (j, delta))
+				w[j] += delta
 
 			print('-----')
 
