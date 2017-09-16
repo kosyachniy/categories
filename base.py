@@ -4,7 +4,7 @@ word=[]
 k=[]
 for i in read(name='formated'):
 	#word=[]
-	for j in i[7:]:
+	for j in i[countcat:]:
 		if j not in word:
 			word.append(j)
 			k.append(1)

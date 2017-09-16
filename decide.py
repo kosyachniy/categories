@@ -1,5 +1,4 @@
 from func import *
-from funcvk import *
 import math
 
 def decide(cont):

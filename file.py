@@ -4,7 +4,7 @@ import codecs
 delete('formated')
 
 m=[]
-with codecs.open('data/texts.txt', 'r', 'utf8') as file:
+with codecs.open('data/'+compilation+'/texts.txt', 'r', 'utf8') as file:
 	for i in file:
 		x=json.loads(i)['name']
 		print(x)
