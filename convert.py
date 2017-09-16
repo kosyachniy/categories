@@ -2,7 +2,7 @@ from func import *
 
 delete('table')
 word=read(name='base')[0]
-twit=read(name='twits')
+twit=read(name='formated')
 write(categories+['"'+i+'"' for i in word], name='table')
 
 twits=[]

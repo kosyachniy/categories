@@ -6,7 +6,7 @@ vk.auth()
 
 send=lambda user, cont: vk.method('messages.send', {'user_id':user, 'message':cont})
 
-def read():
+def readvk():
 	cont=[]
 	for i in vk.method('messages.get')['items']:
 		if not i['read_state']:

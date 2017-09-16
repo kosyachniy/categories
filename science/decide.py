@@ -1,4 +1,5 @@
 from func import *
+from funcvk import *
 import math
 
 def decide(cont):
@@ -21,6 +22,9 @@ def decide(cont):
 		result.append(su)
 
 	print(result)
+	for i in range(len(result)):
+		if math.isinf(result[i]):
+			result[i]=0
 
 	m=sorted(result)[::-1]
 	tex=''
@@ -31,12 +35,21 @@ def decide(cont):
 	else:
 		k=0
 		while k<len(m) and m[k]>0:
-			for i in range(7):
+			for i in range(countcat):
 				if result[i]==m[k]:
-					tex+=['Наука', 'Технологии', 'Новости', 'Публицистика', 'Диалог', 'Юмор', 'Информация'][i]+' ('+str(int(m[k]//(10**raz)))+'%)\n'
+					tex+=categories[i]+' ('+str(int(m[k]//(10**raz)))+'%)\n'
 			k+=1
 
 	return tex if len(tex) else 'По этим данным невозможно определить категорию!'
 
 if __name__=='__main__':
-	print(decide(input()))
+	#print(decide(input()))
+
+	while True:
+		try:
+			for i in readvk():
+				send(i[0], decide(i[1]))
+			time.sleep(2)
+		except:
+			time.sleep(5)
+			vk.auth()

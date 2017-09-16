@@ -21,11 +21,11 @@ def neiro(column):
 	print(y)
 	print(w)
 
-	for iteration in range(27):
+	for iteration in range(10): #27
 		print('Iteration №{}'.format(iteration+1))
 
 		for i in range(len(x)):
-			#Сделать ограничение на числа (ноль, бесконечность)
+			#Сделать ограничение по уменьшению ошибки
 			error = y[i] - act(x[i], w)
 			print(error)
 

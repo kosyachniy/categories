@@ -1,19 +1,18 @@
+from func import *
 import numpy as np
 #import random
 
-allcolumn=7
-
 act = lambda xe, we: sum([xe[i] * we[i] for i in range(len(xe))])
 
-with open('data/text-table.csv', 'r') as f:
-	x = np.loadtxt(f, delimiter=',', skiprows=1).T[allcolumn-1:].T
+with open('data/table.csv', 'r') as f:
+	x = np.loadtxt(f, delimiter=',', skiprows=1).T[countcat-1:].T
 for i in range(len(x)):
 	x[i][0] = 1
 
 def neiro(column):
 	print('Out №{}'.format(column))
 
-	with open('data/text-table.csv', 'r') as f:
+	with open('data/table.csv', 'r') as f:
 		y = np.loadtxt(f, delimiter=',', skiprows=1).T[column].T
 
 	w = [0 for j in range(len(x[0]))] #random
@@ -22,11 +21,11 @@ def neiro(column):
 	print(y)
 	print(w)
 
-	for iteration in range(27):
+	for iteration in range(10): #27
 		print('Iteration №{}'.format(iteration+1))
 
 		for i in range(len(x)):
-			#Сделать ограничение на числа (ноль, бесконечность)
+			#Сделать ограничение по уменьшению ошибки
 			error = y[i] - act(x[i], w)
 			print(error)
 
@@ -40,9 +39,9 @@ def neiro(column):
 	return w
 
 ai=[]
-for i in range(allcolumn):
+for i in range(countcat):
 	ai.append(neiro(i))
 ai=np.array(ai).T
 
-np.savetxt('data/text-weights.csv', ai, delimiter=',')
+np.savetxt('data/weights.csv', ai, delimiter=',')
 print(ai)

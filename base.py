@@ -2,7 +2,7 @@ from func import *
 
 word=[]
 k=[]
-for i in read(name='twits'):
+for i in read(name='formated'):
 	#word=[]
 	for j in i[7:]:
 		if j not in word:
