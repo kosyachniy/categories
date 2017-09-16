@@ -14,7 +14,6 @@ with open('data/'+compilation+'/set.txt') as file:
 	vk.auth()
 
 # Работа с файлами
-
 def delete(name):
 	with open('data/'+compilation+'/'+name+'.csv', 'w') as file:
 		pass
@@ -41,7 +40,6 @@ def text(x):
 	return y
 
 #ВКонтакте
-
 send = lambda user, cont: vk.method('messages.send', {'user_id':user, 'message':cont})
 
 def readvk():

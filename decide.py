@@ -27,17 +27,14 @@ def decide(cont):
 
 	m=sorted(result)[::-1]
 	tex=''
-	try:
-		raz=int(math.log(m[0], 10))-1
-	except:
-		print('Error!')
-	else:
-		k=0
-		while k<len(m) and m[k]>0:
-			for i in range(countcat):
-				if result[i]==m[k]:
-					tex+=categories[i]+' ('+str(int(m[k]//(10**raz)))+'%)\n'
-			k+=1
+
+	for k in range(len(m)):
+		if m[k]<=0:
+			break
+
+		for i in range(countcat):
+			if result[i]==m[k]:
+				tex+=categories[i]+' ('+str(int(m[k]*100))+'%)\n'
 
 	return tex if len(tex) else 'По этим данным невозможно определить категорию!'
 
