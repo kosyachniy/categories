@@ -1,6 +1,6 @@
 from func import *
 
-fault = 0.98 #с какой погрешностью нужен ответ
+fault = 0.997 #с какой погрешностью нужен ответ
 
 act = lambda xe, we: sum([xe[i] * we[i] for i in range(len(xe))])
 
@@ -34,20 +34,18 @@ def neiro(column):
 	print(y)
 	print(w)
 
-	iteration = 0
-	while True: #for iteration in range(1, 21):
-		iteration += 1
+	#iteration = 0
+	for iteration in range(1, 47): #while True:
+		#iteration += 1
 		print('Iteration №{}'.format(iteration))
 
 		err = 0
 
 		for i in range(len(x)):
-			#Сделать ограничение по уменьшению ошибки
 			error = y[i] - act(x[i], w)
 			print(error)
 
-			if error > err:
-				err = error
+			if error > err: err = error
 
 			for j in range(len(x[i])):
 				delta = x[i][j] * error
@@ -57,8 +55,7 @@ def neiro(column):
 			print('-----')
 		print(err)
 
-		if err < fault:
-			break
+		#if err < fault: break
 
 	return w
 
