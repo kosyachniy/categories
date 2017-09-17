@@ -1,7 +1,4 @@
 from func import *
-import numpy as np
-import math
-#import random
 
 fault = 0.98 #с какой погрешностью нужен ответ
 
@@ -17,7 +14,7 @@ discharge = 0
 for i in x:
 	for j in i[1:]:
 		print(j)
-		dis = int(math.log(j, 10)) + 1 if j != 0 else 0
+		dis = int(math.log(j, 10)) + 1 if j != 0 else 0 #если =1 не добавлять разряд
 		if dis > discharge:
 			discharge = dis
 
@@ -31,13 +28,15 @@ def neiro(column):
 	with open('data/' + compilation + '/table.csv', 'r') as f:
 		y = np.loadtxt(f, delimiter=',', skiprows=1).T[column].T
 
-	w = [0 for j in range(len(x[0]))] #random
+	w = [0 for j in range(len(x[0]))]
 
 	print(x)
 	print(y)
 	print(w)
 
-	for iteration in range(1, 21):
+	iteration = 0
+	while True: #for iteration in range(1, 21):
+		iteration += 1
 		print('Iteration №{}'.format(iteration))
 
 		err = 0
@@ -57,6 +56,9 @@ def neiro(column):
 
 			print('-----')
 		print(err)
+
+		if err < fault:
+			break
 
 	return w
 

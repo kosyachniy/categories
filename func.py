@@ -1,4 +1,4 @@
-import requests, json, csv, re, time, vk_api
+import requests, json, csv, re, time, vk_api, math
 from parse import parse
 import numpy as np
 

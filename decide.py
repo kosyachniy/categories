@@ -1,5 +1,4 @@
 from func import *
-import math
 
 def decide(cont):
 	word=read(name='base')[0]
