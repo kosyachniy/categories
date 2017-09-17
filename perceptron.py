@@ -1,9 +1,10 @@
 from func import *
 
-#fault = 0.997 #с какой погрешностью нужен ответ
+fault = 0.1 #с какой погрешностью нужен ответ
 
 act = lambda xe, we: sum([xe[i] * we[i] for i in range(len(xe))])
 
+#Данные
 with open('data/' + compilation + '/table.csv', 'r') as f:
 	x = np.loadtxt(f, delimiter=',', skiprows=1).T[countcat-1:].T
 for i in range(len(x)):
@@ -14,7 +15,7 @@ discharge = 0
 for i in x:
 	for j in i[1:]:
 		print(j)
-		dis = int(math.log(j, 10)) + 1 if j != 0 else 0 #если =1 не добавлять разряд
+		dis = int(math.log(j, 10)) + 1 if j != 0 else 0
 		if dis > discharge:
 			discharge = dis
 
@@ -25,6 +26,7 @@ for i in range(len(x)):
 def neiro(column):
 	print('Out №{}'.format(column))
 
+#Данные
 	with open('data/' + compilation + '/table.csv', 'r') as f:
 		y = np.loadtxt(f, delimiter=',', skiprows=1).T[column].T
 
@@ -34,10 +36,9 @@ def neiro(column):
 	print(y)
 	print(w)
 
-	fault = 0
-	iteration = 0
-	while True: #for iteration in range(1, 47):
-		iteration += 1
+	iteration = 0 #
+	while True: #for iteration in range(1, 21):
+		iteration += 1 #
 		print('iteration №{}'.format(iteration))
 
 		err = 0
@@ -55,14 +56,16 @@ def neiro(column):
 
 			#print('-----')
 
-		print('error: %f (%f)' % (err, fault))
-		if iteration == 1:
-			fault = err
+		if err < fault:
+			break
+		elif iteration == 1:
+			pred = err
+		elif err >= pred: #Остаться рядом с локальным минимумом
+			break
 		else:
-			if err >= fault: #Остаться рядом с локальным минимумом
-				break
-			fault = err
+			pred = err
 
+		print('error: %f (%f)' % (err, pred))
 	return w
 
 w = []
