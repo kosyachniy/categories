@@ -34,7 +34,6 @@ def neiro(column):
 	print(y)
 	print(w)
 
-	start = True
 	fault = 0
 	iteration = 0
 	while True: #for iteration in range(1, 47):
@@ -56,13 +55,11 @@ def neiro(column):
 
 			#print('-----')
 
-		print('ошибка: %f (%f)' % (err, fault))
-		if start:
+		print('error: %f (%f)' % (err, fault))
+		if iteration == 1:
 			fault = err
-			start = False
 		else:
 			if err >= fault: #Остаться рядом с локальным минимумом
-				print('exit')
 				break
 			fault = err
 

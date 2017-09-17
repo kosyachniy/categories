@@ -14,7 +14,7 @@ for i in read(name='formated'):
 	#Прибавление счётчика, только в новом предложении? Проверка не по количеству слов везде, а по плотности в одном примере
 	#words=sorted(set(word), key=word.count, reverse=True)[:10]
 #print(k)
-'''
+''''''
 print(len(k))
 i=0
 while i<len(k):
@@ -24,6 +24,6 @@ while i<len(k):
 		del k[i]
 		del word[i]
 print(len(k))
-'''
+''''''
 
 write(word, name='base', typ='w')
