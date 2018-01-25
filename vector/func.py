@@ -1,5 +1,5 @@
 from gensim.models import KeyedVectors
-model = KeyedVectors.load_word2vec_format('araneum_upos_skipgram_600_2_2017.bin', binary=True)
+model = KeyedVectors.load_word2vec_format('vector/data/araneum_upos_skipgram_600_2_2017.bin', binary=True)
 
 #Формирование слова под модель
 vocab = model.vocab.keys()

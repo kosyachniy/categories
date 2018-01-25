@@ -1,3 +1,6 @@
+import sys
+sys.path.append("perceptron")
+
 from func import *
 
 def decide(cont):
@@ -25,6 +28,10 @@ def decide(cont):
 			result[i]=0
 
 	m=sorted(result)[::-1]
+	#print(m)
+	ma = max(m)
+	return m.index(ma), ma
+	'''
 	tex=''
 
 	for k in range(len(m)):
@@ -36,15 +43,7 @@ def decide(cont):
 				tex+=categories[i]+' ('+str(int(m[k]*100))+'%)\n'
 
 	return tex if len(tex) else 'По этим данным невозможно определить категорию!'
+	'''
 
-if __name__=='__main__':
-	#print(decide(input()))
-
-	while True:
-		try:
-			for i in readvk():
-				send(i[0], decide(i[1]))
-			time.sleep(2)
-		except:
-			time.sleep(5)
-			vk.auth()
+if __name__ == '__main__':
+	print(decide(input()))
