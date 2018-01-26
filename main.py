@@ -21,18 +21,9 @@ pretty = lambda x: '%s (%d%%)' % (cats[x[0]], x[1] * 100 if x[1] < 1 else 99) if
 while True:
 	try:
 		for i in readvk():
-			z1 = decide(i[1])
-			z2 = vector(i[1])
-
-			text = ''
-			if z1[1] > 0.1:
-				text = pretty(z1) + '\n'
-			if z2:
-				text += 'Google: %s' % pretty(z2)
-			if not z1 and not z2:
-				text = 'По этим данным невозможно определить категорию!'
-
-			send(i[0], text)
+			send(i[0], decide(i[1]))
+			z2 = pretty(vector(i[1]))
+			if z2: send(i[1], 'Google: ' + z2)
 		time.sleep(2)
 	except:
 		time.sleep(5)

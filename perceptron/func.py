@@ -2,7 +2,7 @@ import requests, json, csv, re, time, math
 from parse import parse
 import numpy as np
 
-path = 'perceptron'
+path = '.' #'perceptron' #'.'
 
 get=lambda src: requests.get(src).text
 
