@@ -41,7 +41,7 @@ def decide(cont):
 
 		for i in range(countcat):
 			if result[i]==m[k]:
-				tex+=categories[i]+' ('+str(int(m[k]*100) if m[k] < 1 else 0.99)+'%)\n'
+				tex+=categories[i]+' ('+str(int(m[k]*100) if m[k] < 1 else 99)+'%)\n'
 
 	return tex if len(tex) else 'По этим данным невозможно определить категорию!'
 
