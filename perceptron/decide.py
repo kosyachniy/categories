@@ -1,7 +1,7 @@
-import sys
-sys.path.append("perceptron")
+# import sys
+# sys.path.append("perceptron")
 
-from func import *
+from perceptron.func import *
 
 def decide(cont):
 	word=read(name='base')[0]

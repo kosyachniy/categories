@@ -1,8 +1,15 @@
-import requests, json, csv, re, time, math
-from parse import parse
+import requests
+import json
+import csv
+import re
+import time
+import math
 import numpy as np
 
-path = 'perceptron' #'.'
+from perceptron.parse import parse #
+
+
+path = 'perceptron' # '.'
 
 get=lambda src: requests.get(src).text
 
