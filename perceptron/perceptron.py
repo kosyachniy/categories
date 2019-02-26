@@ -1,79 +1,83 @@
-from func import *
+import sys
 
-fault = 0.1 #с какой погрешностью нужен ответ
+import numpy as np
 
-act = lambda xe, we: sum([xe[i] * we[i] for i in range(len(xe))])
 
-#Данные
-with open('data/' + compilation + '/table.csv', 'r') as f:
-	x = np.loadtxt(f, delimiter=',', skiprows=1).T[countcat-1:].T
-for i in range(len(x)):
-	x[i][0] = 1
+OUTS = 1
+FAULT = 0.01
+EPOCHS_COUNT = 100
+EPOCHS_DELTA = 0.999
 
-#Уменьшаем разряд параметров, чтобы при обучении нейронов не выходили громадные ошибки (с каждым разом увеличиваясь)
-discharge = 0
-for i in x:
-	for j in i[1:]:
-		print(j)
-		dis = int(math.log(j, 10)) + 1 if j != 0 else 0
-		if dis > discharge:
-			discharge = dis
 
-for i in range(len(x)):
-	for j in range(1, len(x[0])):
-		x[i][j] /= 10 ** discharge
+def perceptron(name, outs=OUTS, fault=FAULT):
+	# Данные
 
-def neiro(column):
-	print('Out №{}'.format(column))
+	dataset = np.loadtxt('data/{}/train.csv'.format(name), delimiter=',', skiprows=1)
 
-#Данные
-	with open('data/' + compilation + '/table.csv', 'r') as f:
-		y = np.loadtxt(f, delimiter=',', skiprows=1).T[column].T
+	x = np.hstack((np.ones((dataset.shape[0], 1)), dataset[:, outs:]))
+	y = dataset[:, :outs]
 
-	w = [0 for j in range(len(x[0]))]
+	# Нормализация
+	
+	el = [i for i in x.reshape(1, -1)[0] if i>1]
+	dis = int(max(np.log10(el))) + 1 if el else 1
+	x = np.array([[j/10**dis for j in i] for i in x])
 
-	print(x)
-	print(y)
-	print(w)
+	# Рассчёт весов
 
-	iteration = 0 #
-	while True: #for iteration in range(1, 21):
-		iteration += 1 #
-		print('iteration №{}'.format(iteration))
+	def backpropagation(y):
+		w = np.zeros((x.shape[1], 1))
+		iteration = 0
+		history = []
 
-		err = 0
+		while True: # for iteration in range(1, 51):
+			iteration += 1
+			error_max = 0
 
-		for i in range(len(x)):
-			error = y[i] - act(x[i], w)
-			#print(error)
+			for i in range(x.shape[0]):
+				error = y[i] - x[i].dot(w).sum()
 
-			if error > err: err = error
+				error_max = max(error, error_max)
+				# print('Error', error_max, error)
 
-			for j in range(len(x[i])):
-				delta = x[i][j] * error
-				#print('Δw%d = %f' % (j, delta))
-				w[j] += delta
+				for j in range(x.shape[1]):
+					delta = x[i][j] * error
+					w[j] += delta
+					# print('Δw{} = {}'.format(j, delta))
 
-			#print('-----')
+			history.append(error_max)
+			print('№{}: {}'.format(iteration, error_max)) #
 
-		if err < fault:
-			break
-		elif iteration == 1:
-			pred = err
-		elif err >= pred: #Остаться рядом с локальным минимумом
-			break
-		else:
-			pred = err
+			if error_max < fault or (iteration % 101 == 0 and error_max >= history[-EPOCHS_COUNT]*EPOCHS_DELTA):
+				break
 
-		print('error: %f (%f)' % (err, pred))
+		return w
+
+	w = np.hstack([backpropagation(i[:, 0]) for i in y.T.reshape(-1, y.shape[0], 1)])
+
+	# Учёт нормализации
+	
+	w = np.array([[j/10**dis for j in i] for i in w])
+
+	#
+
 	return w
 
-w = []
-for i in range(countcat):
-	w.append([j / (10 ** discharge) for j in neiro(i)])
-	w[len(w)-1][0] *= 10 ** discharge
-w = np.array(w).T
 
-#Сохранение весов
-np.savetxt('data/' + compilation + '/weights.csv', w, delimiter=',')
-print(w)
+if __name__ == '__main__':
+	name = sys.argv[1]
+	outs = int(sys.argv[2]) if len(sys.argv) >= 3 else OUTS
+	fault = float(sys.argv[3]) if len(sys.argv) >= 4 else FAULT
+
+	w = perceptron(name, outs, fault)
+
+	# Сохранение весов
+
+	print(w) #
+	np.savetxt('data/{}/weights.csv'.format(name), w, delimiter=',')
+
+	# Прогноз
+
+	while True:
+		x = np.array([1] + list(map(float, input().split()))).reshape((outs, -1))
+		print(x.dot(w).sum(axis=0))
