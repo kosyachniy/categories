@@ -8,16 +8,7 @@ import requests
 with open('keys.json', 'r') as file:
 	data = json.loads(file.read())['vk']
 
-	vk = vk_api.VkApi(token=data['token'])
-
-	# vks = vk_api.VkApi(login=data['login'], password=data['password'])
-	# vks.auth()
-
-# with open('sets.json', 'r') as file:
-# 	data = json.loads(file.read())['vk']
-
-# 	GROUP_ID = data['group']
-# 	ALBUM_ID = data['album']
+vk = vk_api.VkApi(token=data['token'])
 
 
 def max_size(lis, name='photo'):
@@ -44,18 +35,24 @@ def send(user, cont, img=[], keyboard=None):
 	# Изображения
 	for i in range(len(img)):
 		if img[i][0:5] != 'photo':
-			pass
-			# # Загружаем изображение на сервер
-			# if img[i].count('/') >= 3: # Если файл из интернета
-			# 	with open('re.jpg', 'wb') as file:
-			# 		file.write(requests.get(img[i]).content)
-			# 	img[i] = 're.jpg'
+			# Загружаем изображение на сервер
+			if img[i].count('/') >= 3: # Если файл из интернета
+				with open('re.jpg', 'wb') as file:
+					file.write(requests.get(img[i]).content)
+				img[i] = 're.jpg'
 
-			# # Загружаем изображение в ВК
-			# photo = vk_api.VkUpload(vks).photo(img[i], group_id=GROUP_ID, album_id=ALBUM_ID)[0]
-			# img[i] = 'photo{}_{}'.format(photo['owner_id'], photo['id'])
+			# Загружаем изображение в ВК
+			url = vk.method('photos.getMessagesUploadServer')['upload_url']
+
+			response = requests.post(url, files={'photo': open(img[i], 'rb')})
+			result = json.loads(response.text)
+
+			photo = vk.method('photos.saveMessagesPhoto', {'server': result['server'], 'photo': result['photo'], 'hash': result['hash']})
+
+			img[i] = 'photo{}_{}'.format(photo[0]['owner_id'], photo[0]['id'])
 
 	req = {
+		'random_id': int(time.time() * 1000000),
 		'user_id': user,
 		'message': cont,
 		'attachment': ','.join(img),
@@ -201,7 +198,3 @@ def stats():
 		stat.append((i, len(timeline[i]), sum_mes))
 
 	return stat
-
-# # Участники сообщества
-# def users():
-# 	return vk.method('groups.getMembers', {'group_id': GROUP_ID})['items']

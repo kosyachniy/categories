@@ -1,6 +1,12 @@
+# Кэш
+
 **/__pycache__/
 
+# Ключи
+
 keys.json
+
+# 
 
 vector/data/
 strings/text.txt
