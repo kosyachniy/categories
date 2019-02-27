@@ -26,20 +26,48 @@ def str2set(text):
 
 def doc2set(compilation):
 	url = 'data/{}/'.format(compilation)
+
+	# Уравнять количество текстов из каждого документов
+
+	max_count = min([len(file) for file in os.listdir(url) if '.json' in file])
+
+	#
+
 	files = [file for file in os.listdir(url) if '.json' in file]
+	print(files)
 	cont = []
+
+	# ! Добавить разбиение документов на равные куски (100 слов)
 
 	for name in files:
 		category = name.split('.')[0]
+		i = 0
 
 		with open(url + name, 'r') as file:
-			for string in file:
+			for string in file: # enumerate
+				# Уравнять количество текстов из каждого документов
+
+				if i == max_count:
+					break
+
+				#
+
 				doc = json.loads(string)
 
-				cont.append({
+				req = {
 					'category': category,
-					'cont': str2set(doc['name']), # cont
-				})
+					'cont': str2set(doc['cont']), # name
+				}
+
+				# Уравнивание документов
+
+				if not 50 < len(req['cont']) < 300:
+					continue
+
+				#
+
+				cont.append(req)
+				i += 1
 
 	random.shuffle(cont)
 
@@ -68,14 +96,18 @@ def word_bag(data, frequency=True, stop=True):
 		print(freq)
 
 		for i in freq:
-			if freq[i] > freq_max * 0.8 or freq[i] < freq_max * 0.2:
+			if freq[i] <= 2: # freq[i] > freq_max * 0.95 or freq[i] < freq_max * 0.2:
 				corpus.remove(i)
+
+	# Отсеивание частей речи
+
+
 
 	# Стоп-слова
 
 	if stop:
 		stopwords = set(nltk.corpus.stopwords.words('russian'))
-		stopwords = stopwords | {'это',}
+		stopwords = stopwords | {'это', 'россия', 'подпишись', 'подписаться', 'канал', 'youtube', 'instagram', 'фото', 'фотограффия', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь', 'наш', 'объясняем', 'объяснять', 'window', 'settings', 'components', 'eagleplayer', 'enabled', 'true', 'false', 'templates', 'multiplayer', 'relatedVideosHeight', 'ramblercommentscounter', 'relatedvideosheight', 'scroll', 'год', 'весь', 'также', 'лента', 'ру', 'х', 'р', 'т', 'д'}
 
 		corpus = corpus - stopwords
 
@@ -118,8 +150,10 @@ if __name__ == '__main__':
 
 	vectors = [categories + ['"{}"'.format(el) for el in corpus]] + vectors
 
+	# ! Добавить test
+
 	write(vectors, name, 'train')
 	write(corpus, name, 'corpus')
 	write(categories, name, 'categories')
 
-	print('\nDataset: {}\nCorpus: {}\nCategories: {}\n{}\n'.format(len(vectors), len(corpus), len(categories), ' | '.join(categories)))
+	print('\nDataset: {}\nCorpus: {}\nCategories: {}\n{}\n'.format(len(vectors)-1, len(corpus), len(categories), ' | '.join(categories)))

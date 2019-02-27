@@ -1,7 +1,8 @@
 import sys
 
 import numpy as np
-from sklearn import preprocessing
+# from sklearn import preprocessing
+# from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 import joblib
 
@@ -17,16 +18,25 @@ def logistic_regression(name, outs=OUTS):
 	x = dataset[:, outs:]
 	y = dataset[:, :outs]
 
+	# Преобразование y
+
+	y = [list(row).index(1) for row in y]
+
 	# Стандартизация
 
-	x = preprocessing.normalize(x)
+	# x = preprocessing.normalize(x)
 
 	# Рассчёт весов
 
-	model = []
-	for i in range(outs):
-		model.append(LogisticRegression())
-		model[-1].fit(x, y[:, i])
+	# sc = StandardScaler()
+	# sc.fit(x)
+	# x_std = sc.transform(x)
+	# x_test_std = sc.transform(x_test)
+	x_std = x
+	# x_test_std = x_test
+
+	model = LogisticRegression(C=1000.0, random_state=0)
+	model.fit(x_std, y)
 
 	#
 
@@ -41,6 +51,5 @@ if __name__ == '__main__':
 
 	# Сохранение модели
 
-	for i, el in enumerate(model):
-		# print(el)
-		joblib.dump(el, 'data/{}/model-{}.txt'.format(name, i))
+	# print(model)
+	joblib.dump(model, 'data/{}/model.txt'.format(name))

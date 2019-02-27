@@ -1,9 +1,10 @@
 import joblib
 
+
 def predict(x, compilation):
 	# Обработка данных
 
-	x = [[1] + x]
+	x = [x] # [[1] + x]
 
 	# Загрузка модели
 

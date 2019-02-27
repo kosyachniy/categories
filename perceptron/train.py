@@ -78,9 +78,3 @@ if __name__ == '__main__':
 
 	print(w) #
 	np.savetxt('data/{}/weights.csv'.format(name), w, delimiter=',')
-
-	# Прогноз
-
-	while True:
-		x = np.array([1] + list(map(float, input().split()))).reshape((outs, -1))
-		print(x.dot(w).sum(axis=0))

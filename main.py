@@ -1,11 +1,11 @@
 import sys
 import time
 import csv
-import numpy as np
 
 from func.vk_group import read, send
-from scikit.predict import predict
 from vectorize import str2set, set2vector
+from perceptron.predict import predict as per_pred
+from scikit.predict import predict as sci_pred
 # from vector.main import vector
 
 
@@ -25,22 +25,30 @@ if __name__ == '__main__':
 
 	categories = csv_read(name, 'categories')
 
-	print(categories)
+	print(categories) #
 
 	while True:
 		# try:
 		for i in read():
 			print(i)
+
 			corpus = csv_read(name, 'corpus')
 			vec = set2vector(str2set(i[1]), corpus)
-			res = predict(vec, name)
-			print(res, categories)
-			send(i[0], categories[res])
+
+			# ! Выводить список значимых слов
+			# print(vec)
+
+			sci_res = sci_pred(vec, name)
+			per_res = per_pred(vec, name)
+
+			print(sci_res, per_res)
+
+			send(i[0], 'SciKit: {}\nПерцептрон: {}'.format(categories[sci_res], categories[per_res]))
 
 			# z2 = pretty(vector(i[1]))
 			# if z2:
 			# 	send(i[1], 'Google: ' + z2)
-		time.sleep(2)
+		# 	time.sleep(2)
 		# except:
 		# 	time.sleep(5)
 		# 	#vk.auth()
