@@ -1,6 +1,7 @@
 import sys
 
 import numpy as np
+# from sklearn import preprocessing
 
 
 OUTS = 1
@@ -22,6 +23,8 @@ def perceptron(name, outs=OUTS, fault=FAULT):
 	el = [i for i in x.reshape(1, -1)[0] if i>1]
 	dis = int(max(np.log10(el))) + 1 if el else 1
 	x = np.array([[j/10**dis for j in i] for i in x])
+
+	# x = preprocessing.normalize(x)
 
 	# Рассчёт весов
 

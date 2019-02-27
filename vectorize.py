@@ -1,13 +1,13 @@
 import os
 import sys
 import json
-# import csv
 import random
 
 import re
 import numpy as np
 # from pymystem3 import Mystem
 from pymorphy2 import MorphAnalyzer
+import nltk
 
 
 # def lemmatize(text):
@@ -38,49 +38,71 @@ def doc2set(compilation):
 
 				cont.append({
 					'category': category,
-					'cont': str2set(doc['cont']),
+					'cont': str2set(doc['name']), # cont
 				})
 
 	random.shuffle(cont)
 
 	return cont
 
-def word_bag(texts):
+def word_bag(data, frequency=True, stop=True):
 	corpus = set()
 
-	for i in texts:
+	for i in data:
 		corpus = corpus | i['cont']
 
-	# Стоп-слова
 	# Частотное отсеивание
+
+	if frequency:
+		freq = {word: 0 for word in corpus}
+
+		for el in data:
+			for word in el['cont']:
+				freq[word] += 1
+
+		# ! Сделать по нормальному распределению
+
+		counts = freq.values()
+		freq_max = max(counts)
+
+		print(freq)
+
+		for i in freq:
+			if freq[i] > freq_max * 0.8 or freq[i] < freq_max * 0.2:
+				corpus.remove(i)
+
+	# Стоп-слова
+
+	if stop:
+		stopwords = set(nltk.corpus.stopwords.words('russian'))
+		stopwords = stopwords | {'это',}
+
+		corpus = corpus - stopwords
+
+	#
 
 	return tuple(corpus)
 
 def set2vector(data, corpus):
+	return [int(j in data) for j in corpus]
+
+def set2obj(data, corpus):
 	categories = list(set(i['category'] for i in data))
 
 	for i in range(len(data)):
 		category_vec = [int(j == data[i]['category']) for j in categories]
-		word_vec = [int(j in data[i]['cont']) for j in corpus]
+		word_vec = set2vector(data[i]['cont'], corpus)
 
 		data[i] = category_vec + word_vec
 
 	return data, categories
 
-def vectorize(name):
-	cont = doc2set(name)
-	corpus = word_bag(cont)
-	vectors, categories = set2vector(cont, corpus)
+def vectorize(compilation, frequency):
+	cont = doc2set(compilation)
+	corpus = word_bag(cont, frequency)
+	vectors, categories = set2obj(cont, corpus)
 
 	return vectors, corpus, categories
-
-# def write(text, compilation, name, sign=','):
-# 	with open('data/{}/{}.csv'.format(compilation, name), 'w') as file:
-# 		if type(text[0]) == list:
-# 			for el in text:
-# 				csv.writer(file, delimiter=sign, quotechar=' ', quoting=csv.QUOTE_MINIMAL).writerow(el)
-# 		else:
-# 			csv.writer(file, delimiter=sign, quotechar=' ', quoting=csv.QUOTE_MINIMAL).writerow(text)
 
 def write(data, compilation, name, sign=','):
 	name = 'data/{}/{}.csv'.format(compilation, name)
@@ -90,8 +112,9 @@ def write(data, compilation, name, sign=','):
 
 if __name__ == '__main__':
 	name = sys.argv[1]
+	frequency = False if len(sys.argv) >= 3 else True
 
-	vectors, corpus, categories = vectorize(name)
+	vectors, corpus, categories = vectorize(name, frequency)
 
 	vectors = [categories + ['"{}"'.format(el) for el in corpus]] + vectors
 
