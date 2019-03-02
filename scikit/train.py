@@ -42,14 +42,29 @@ def logistic_regression(name, outs=OUTS):
 
 	return model
 
+def test(compilation, outs, model):
+	dataset = np.loadtxt('data/{}/test.csv'.format(compilation), delimiter=',', skiprows=1)
+	x = dataset[:, outs:]
+	y = dataset[:, :outs]
+
+	y = [np.where(row == 1.)[0][0] for row in y]
+	result = [model.predict([row])[0] == y[num] for num, row in enumerate(x)]
+
+	return sum(result), len(result)
+
 
 if __name__ == '__main__':
-	name = sys.argv[1]
-	outs = int(sys.argv[2]) if len(sys.argv) >= 3 else OUTS
+	compilation = sys.argv[1]
+	outs = np.genfromtxt('data/{}/categories.csv'.format(compilation), delimiter=',').shape[0]
 
-	model = logistic_regression(name, outs)
+	model = logistic_regression(compilation, outs)
 
 	# Сохранение модели
 
+	joblib.dump(model, 'data/{}/model.txt'.format(compilation))
 	# print(model)
-	joblib.dump(model, 'data/{}/model.txt'.format(name))
+
+	# Тестирование
+
+	answ_right, answ_all = test(compilation, outs, model)
+	print('Test: {}%'.format(answ_right * 100 // answ_all))

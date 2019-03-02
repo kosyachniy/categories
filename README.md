@@ -3,8 +3,13 @@
 Vectorize -> Train -> Predict
 
 1. Разметка данных ``` python vectorize.py lenta ```
-2. Обучение ``` python scikit/train.py lenta 13 ```
+2. Обучение
+2.1. SciKit ``` python scikit/train.py lenta ```
+2.2. Перцептрон ``` python perceptron/train.py lenta ```
 3. Прогнозированние ``` python main.py lenta ```
+
+
+[Ссылка на ВК-бота]()
 
 
 1. Сделана проверка на плотность внутри предложения (убрать если будут маленькие предложения и заменить на выделение важных слов с помощью ИИ)

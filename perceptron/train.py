@@ -4,13 +4,12 @@ import numpy as np
 # from sklearn import preprocessing
 
 
-OUTS = 1
 FAULT = 0.01
 EPOCHS_COUNT = 100
 EPOCHS_DELTA = 0.999
 
 
-def perceptron(name, outs=OUTS, fault=FAULT):
+def perceptron(name, outs, fault=FAULT):
 	# Данные
 
 	dataset = np.loadtxt('data/{}/train.csv'.format(name), delimiter=',', skiprows=1)
@@ -66,15 +65,30 @@ def perceptron(name, outs=OUTS, fault=FAULT):
 
 	return w
 
+def test(compilation, outs, w):
+	dataset = np.loadtxt('data/{}/test.csv'.format(compilation), delimiter=',', skiprows=1)
+	x = np.hstack((np.ones((dataset.shape[0], 1)), dataset[:, outs:]))
+	y = dataset[:, :outs]
+
+	y = [np.where(row == 1.)[0][0] for row in y]
+	result = [row.dot(w).argmax() == y[num] for num, row in enumerate(x)]
+
+	return sum(result), len(result)
+
 
 if __name__ == '__main__':
-	name = sys.argv[1]
-	outs = int(sys.argv[2]) if len(sys.argv) >= 3 else OUTS
-	fault = float(sys.argv[3]) if len(sys.argv) >= 4 else FAULT
+	compilation = sys.argv[1]
+	outs = np.genfromtxt('data/{}/categories.csv'.format(compilation), delimiter=',').shape[0]
+	fault = float(sys.argv[2]) if len(sys.argv) >= 3 else FAULT
 
-	w = perceptron(name, outs, fault)
+	w = perceptron(compilation, outs, fault)
 
 	# Сохранение весов
 
 	print(w) #
-	np.savetxt('data/{}/weights.csv'.format(name), w, delimiter=',')
+	np.savetxt('data/{}/weights.csv'.format(compilation), w, delimiter=',')
+
+	# Тестирование
+
+	answ_right, answ_all = test(compilation, outs, w)
+	print('Test: {}%'.format(answ_right * 100 // answ_all))

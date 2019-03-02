@@ -1,10 +1,10 @@
 import os
 import sys
+import csv
 import json
 import random
 
 import re
-import numpy as np
 # from pymystem3 import Mystem
 from pymorphy2 import MorphAnalyzer
 import nltk
@@ -24,7 +24,7 @@ def str2set(text):
 	text = re.sub(r'[^a-zA-Zа-яА-Я]', ' ', text)
 	return lemmatize(text)
 
-def doc2set(compilation):
+def doc2set(compilation, test_rate=0.2):
 	url = 'data/{}/'.format(compilation)
 
 	# Уравнять количество текстов из каждого документов
@@ -70,8 +70,17 @@ def doc2set(compilation):
 				i += 1
 
 	random.shuffle(cont)
+	categories = list(set([i['category'] for i in cont]))
 
-	return cont
+	# Тестовая выборка
+
+	count = int(len(cont) * test_rate)
+	test = cont[:count]
+	train = cont[count:]
+
+	#
+
+	return train, test, categories
 
 def word_bag(data, frequency=True, stop=True):
 	corpus = set()
@@ -118,42 +127,56 @@ def word_bag(data, frequency=True, stop=True):
 def set2vector(data, corpus):
 	return [int(j in data) for j in corpus]
 
-def set2obj(data, corpus):
-	categories = list(set(i['category'] for i in data))
-
+def set2obj(data, corpus, categories):
 	for i in range(len(data)):
 		category_vec = [int(j == data[i]['category']) for j in categories]
 		word_vec = set2vector(data[i]['cont'], corpus)
 
 		data[i] = category_vec + word_vec
 
-	return data, categories
+	return data
+
+def obj2csv(vectors, corpus, categories):
+	return [categories + ['"{}"'.format(el) for el in corpus]] + vectors
 
 def vectorize(compilation, frequency):
-	cont = doc2set(compilation)
-	corpus = word_bag(cont, frequency)
-	vectors, categories = set2obj(cont, corpus)
+	train, test, categories = doc2set(compilation)
+	corpus = word_bag(train, frequency)
 
-	return vectors, corpus, categories
+	vectors_train = set2obj(train, corpus, categories)
+	vectors_test = set2obj(test, corpus, categories)
+
+	csv_train = obj2csv(vectors_train, corpus, categories)
+	csv_test = obj2csv(vectors_test, corpus, categories)
+
+	return csv_train, csv_test, corpus, categories
 
 def write(data, compilation, name, sign=','):
 	name = 'data/{}/{}.csv'.format(compilation, name)
-	data = np.array(data)
-	np.savetxt(name, data, delimiter=sign, fmt='%s')
+
+	# Для записи матриц
+	if type(data) not in (list, tuple) or type(data[0]) not in (list, tuple):
+		data = [data]
+
+	with open(name, 'w') as file:
+		for i in data:
+			csv.writer(file, delimiter=sign, quotechar=' ', quoting=csv.QUOTE_MINIMAL).writerow(i)
 
 
 if __name__ == '__main__':
 	name = sys.argv[1]
 	frequency = False if len(sys.argv) >= 3 else True
 
-	vectors, corpus, categories = vectorize(name, frequency)
+	train, test, corpus, categories = vectorize(name, frequency)
 
-	vectors = [categories + ['"{}"'.format(el) for el in corpus]] + vectors
-
-	# ! Добавить test
-
-	write(vectors, name, 'train')
+	write(train, name, 'train')
+	write(test, name, 'test')
 	write(corpus, name, 'corpus')
 	write(categories, name, 'categories')
 
-	print('\nDataset: {}\nCorpus: {}\nCategories: {}\n{}\n'.format(len(vectors)-1, len(corpus), len(categories), ' | '.join(categories)))
+	# Отображение
+
+	ds_train = len(train) - 1
+	ds_test = len(test) - 1
+
+	print('\nDataset: {} ({} + {})\nCorpus: {}\nCategories: {}\n{}\n'.format(ds_train+ds_test, ds_train, ds_test, len(corpus), len(categories), ' | '.join(categories)))
