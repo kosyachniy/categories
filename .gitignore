@@ -1,6 +1,8 @@
 # Кэш
 
-**/__pycache__/
+.DS_Store
+
+__pycache__/
 
 .vscode
 
@@ -15,3 +17,5 @@ strings/text.txt
 strings/cont.txt
 
 -/
+
+/env/

@@ -17,7 +17,7 @@ SPLITTING = False
 SET_SIZE = 300
 TEST_RATE = 0.2
 ALLOWED_POS = ('noun', 'adjf', 'adjs', 'comp', 'verb', 'infn', 'prtf', 'prts', 'grnd')
-STOP_WORDS = {'это', 'россия', 'подпишись', 'подписаться', 'канал', 'youtube', 'instagram', 'фото', 'фотограффия', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь', 'наш', 'объясняем', 'объяснять', 'window', 'settings', 'components', 'eagleplayer', 'enabled', 'true', 'false', 'templates', 'multiplayer', 'relatedVideosHeight', 'ramblercommentscounter', 'relatedvideosheight', 'scroll', 'год', 'весь', 'также', 'лента', 'ру', 'х', 'р', 'т', 'д'}
+STOP_WORDS = {'это', 'россия', 'подпишись', 'подписаться', 'канал', 'youtube', 'instagram', 'фото', 'фотограффия', 'январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь', 'наш', 'объясняем', 'объяснять', 'window', 'settings', 'components', 'eagleplayer', 'enabled', 'true', 'false', 'templates', 'multiplayer', 'relatedVideosHeight', 'ramblercommentscounter', 'relatedvideosheight', 'scroll', 'год', 'весь', 'также', 'лента', 'ру', 'х', 'р', 'т', 'д', 'й'}
 
 
 # def lemmatize(text):
@@ -138,7 +138,7 @@ def word_bag(data, frequency=CUT_FREQUENCY, stop=CUT_STOP_WORDS):
 		print(freq)
 
 		for i in freq:
-			if freq[i] <= 2: # freq[i] > freq_max * 0.95 or freq[i] < freq_max * 0.2:
+			if freq[i] <= 3: # freq[i] > freq_max * 0.95 or freq[i] < freq_max * 0.2:
 				corpus.remove(i)
 
 	# Стоп-слова
@@ -194,8 +194,8 @@ def write(data, compilation, name, sign=','):
 
 if __name__ == '__main__':
 	name = sys.argv[1]
-	frequency = False if sys.argv[2] == 'x' else True if len(sys.argv) >= 3 else CUT_FREQUENCY
-	cut_speech = False if sys.argv[3] == 'x' else True if len(sys.argv) >= 4 else CUT_POS
+	frequency = (False if sys.argv[2] == 'x' else True) if len(sys.argv) >= 3 else CUT_FREQUENCY
+	cut_speech = (False if sys.argv[3] == 'x' else True) if len(sys.argv) >= 4 else CUT_POS
 
 	train, test, corpus, categories = vectorize(name, frequency, cut_speech)
 
